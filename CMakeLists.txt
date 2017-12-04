@@ -7,3 +7,5 @@ target_include_directories(test_runner PUBLIC lib/catch/single_include)
 target_compile_features(test_runner PUBLIC cxx_std_11)
 
 enable_testing()
+
+add_subdirectory(01-inverse-captcha)
