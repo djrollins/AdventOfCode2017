@@ -19,27 +19,17 @@ int manhatten_distance(int n)
 	int remainder = difference % (side - 1);
 	int corner = side / 2;
 
-	int x, y;
-
 	switch (difference_in_whole_sides) {
 		case 0:
-			x = corner - remainder;
-			y = -corner;
-			break;
+			return std::abs(corner - remainder) + std::abs(-corner);
 		case 1:
-			x = -corner;
-			y = -corner + remainder;
-			break;
+			return std::abs(-corner) + std::abs(-corner + remainder);
 		case 2:
-			x = -corner + remainder;
-			y = corner;
-			break;
+			return std::abs(-corner + remainder) + std::abs(corner);
 		case 3:
-			x = corner;
-			y = corner - remainder;
-			break;
+			return std::abs(corner) + std::abs(corner - remainder);
 	}
 
-	return std::abs(x) + std::abs(y);
+	return 0;
 }
 
