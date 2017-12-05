@@ -21,13 +21,13 @@ int manhatten_distance(int n)
 
 	switch (difference_in_whole_sides) {
 		case 0:
-			return std::abs(corner - remainder) + std::abs(-corner);
+			return std::abs(corner - remainder) + corner;
 		case 1:
-			return std::abs(-corner) + std::abs(-corner + remainder);
+			return corner + std::abs(corner - remainder);
 		case 2:
-			return std::abs(-corner + remainder) + std::abs(corner);
+			return std::abs(corner - remainder) + corner;
 		case 3:
-			return std::abs(corner) + std::abs(corner - remainder);
+			return corner + std::abs(corner - remainder);
 	}
 
 	return 0;
