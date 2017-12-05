@@ -9,3 +9,4 @@ target_compile_features(test_runner PUBLIC cxx_std_11)
 enable_testing()
 
 add_subdirectory(01-inverse-captcha)
+add_subdirectory(02-corruption-checksum)
