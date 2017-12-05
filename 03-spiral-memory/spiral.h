@@ -14,17 +14,30 @@ int manhatten_distance(int n)
 
 	int side = side_length(n);
 	int current = std::pow(side, 2);
-	int direction = 1;
-	int x = side / 2;
-	int y = -(side / 2);
+	int difference = current - n;
+	int difference_in_whole_sides = difference / (side - 1);
+	int remainder = difference % (side - 1);
+	int corner = side / 2;
 
-	while (current > n) {
-		auto step = side - 1;
-		while (step-- && current > n) { --current; x -= direction; };
-		step = side - 1;
-		while (step-- && current > n) { --current; y += direction; };
+	int x, y;
 
-		direction *= -1;
+	switch (difference_in_whole_sides) {
+		case 0:
+			x = corner - remainder;
+			y = -corner;
+			break;
+		case 1:
+			x = -corner;
+			y = -corner + remainder;
+			break;
+		case 2:
+			x = -corner + remainder;
+			y = corner;
+			break;
+		case 3:
+			x = corner;
+			y = corner - remainder;
+			break;
 	}
 
 	return std::abs(x) + std::abs(y);
