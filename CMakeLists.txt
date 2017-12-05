@@ -10,3 +10,4 @@ enable_testing()
 
 add_subdirectory(01-inverse-captcha)
 add_subdirectory(02-corruption-checksum)
+add_subdirectory(03-spiral-memory)
