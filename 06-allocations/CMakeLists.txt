@@ -1,0 +1,2 @@
+add_executable(allocations allocations.cpp)
+target_compile_features(allocations PRIVATE cxx_std_17)

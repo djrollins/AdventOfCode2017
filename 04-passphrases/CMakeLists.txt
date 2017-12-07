@@ -1,0 +1,2 @@
+add_executable(passphrases passphrases.cpp)
+target_compile_features(passphrases PRIVATE cxx_std_17)
