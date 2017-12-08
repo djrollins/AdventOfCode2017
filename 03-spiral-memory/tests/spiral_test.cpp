@@ -1,4 +1,5 @@
 #include "../spiral.h"
+
 #include "catch.hpp"
 
 // 37  36  35  34  33  32  31
@@ -44,3 +45,7 @@ TEST_CASE("can find manhatten distance for position 1024")
 	REQUIRE(31 == manhatten_distance(1024));
 }
 
+TEST_CASE("part 2: can calculate next highest value")
+{
+	REQUIRE(266330 == next_highest(265149));
+}
