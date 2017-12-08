@@ -1,19 +1,35 @@
 #include "checksum.h"
 
 #include <algorithm>
-#include <iostream>
-#include <string>
-#include <vector>
+#include <numeric>
+#include <iterator>
+#include <sstream>
 
-int main()
+int minmax_diff(const std::vector<int> &row)
 {
-	std::vector<std::vector<int>> sheet;
-	std::string buffer;
+	auto [min, max] = minmax_element(std::cbegin(row), std::cend(row));
+	return *max - *min;
+}
 
-	while (std::getline(std::cin, buffer)) {
-		sheet.push_back(parse_row(buffer));
+int find_divisor(std::vector<int> row)
+{
+	auto first = std::begin(row);
+	auto last = std::end(row);
+
+	std::sort(first, last, std::greater<>{});
+
+	for (; first != last - 1; ++first) {
+		auto curr = std::find_if(first + 1, last, [num=*first](auto denom) { return num % denom == 0; });
+		if (curr != last) return *first / *curr;
 	}
 
-	std::cout << "minmax: " << checksum(sheet, minmax_diff) << '\n';
-	std::cout << "divisor: " << checksum(sheet, find_divisor) << '\n';
+	return 0;
+}
+
+std::vector<int> parse_row(const std::string &str)
+{
+	std::vector<int> row;
+	std::istringstream ss{str};
+	std::copy(std::istream_iterator<int>{ss}, std::istream_iterator<int>{}, std::back_inserter(row));
+	return row;
 }

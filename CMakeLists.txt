@@ -8,6 +8,12 @@ target_compile_features(test_runner PUBLIC cxx_std_11)
 
 enable_testing()
 
+set(COMPILER_WARNINGS -Wall -Wextra -pedantic)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+	set(COMPILER_WARNINGS ${COMPILER_WARNINGS} -Weverything -Wno-c++98-compat)
+endif()
+
+
 add_subdirectory(01-inverse-captcha)
 add_subdirectory(02-corruption-checksum)
 add_subdirectory(03-spiral-memory)

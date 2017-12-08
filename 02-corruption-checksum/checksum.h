@@ -1,28 +1,14 @@
-#include <algorithm>
+#ifndef CHECKSUM_H
+#define CHECKSUM_H
+
 #include <numeric>
-#include <sstream>
 #include <vector>
+#include <string>
 
-int minmax_diff(const std::vector<int> &row)
-{
-	auto [min, max] = minmax_element(std::cbegin(row), std::cend(row));
-	return *max - *min;
-}
+std::vector<int> parse_row(const std::string &str);
 
-int find_divisor(std::vector<int> row)
-{
-	auto first = std::begin(row);
-	auto last = std::end(row);
-
-	std::sort(first, last, std::greater<>{});
-
-	for (; first != last - 1; ++first) {
-		auto curr = std::find_if(first + 1, last, [num=*first](auto denom) { return num % denom == 0; });
-		if (curr != last) return *first / *curr;
-	}
-
-	return 0;
-}
+int minmax_diff(const std::vector<int> &row);
+int find_divisor(std::vector<int> row);
 
 template<typename RowFunc>
 int checksum(const std::vector<std::vector<int>> &sheet, RowFunc func)
@@ -34,10 +20,4 @@ int checksum(const std::vector<std::vector<int>> &sheet, RowFunc func)
 		});
 }
 
-std::vector<int> parse_row(const std::string &str)
-{
-	std::vector<int> row;
-	std::istringstream ss{str};
-	std::copy(std::istream_iterator<int>{ss}, std::istream_iterator<int>{}, std::back_inserter(row));
-	return row;
-}
+#endif//CHECKSUM_H
