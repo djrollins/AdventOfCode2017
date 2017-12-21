@@ -65,9 +65,8 @@ static std::vector<uint8_t> generate_sequence(std::size_t const count)
 }
 
 template<typename CyclicIter, typename LengthsIter>
-void run_hash(CyclicIter &cycle, LengthsIter begin, LengthsIter end)
+int run_hash(CyclicIter &cycle, LengthsIter begin, LengthsIter end, int skip = 0)
 {
-	static auto skip = 0;
 	std::vector<uint8_t> tmp(256);
 
 	for (auto iter = begin; iter != end; ++iter) {
@@ -75,9 +74,24 @@ void run_hash(CyclicIter &cycle, LengthsIter begin, LengthsIter end)
 		std::reverse(std::begin(tmp), end);
 		cycle = std::next(std::copy(std::begin(tmp), end, cycle), skip++);
 	}
+
+	return skip;
 }
 
-int main()
+void part1()
+{
+	auto seq = generate_sequence(256);
+
+	std::vector<uint8_t> lengths{130,126,1,11,140,2,255,207,18,254,246,164,29,104,0,224};
+
+	cyclic_iterator<decltype(seq)::iterator> iter(std::begin(seq), std::end(seq));
+
+	run_hash(iter, std::begin(lengths), std::end(lengths));
+
+	std::cout << seq[0] * seq[1] << '\n';
+}
+
+void part2()
 {
 	auto seq = generate_sequence(256);
 
@@ -90,8 +104,9 @@ int main()
 
 	cyclic_iterator<decltype(seq)::iterator> iter(std::begin(seq), std::end(seq));
 
+	auto skip = 0;
 	for (int i = 0; i < 64; ++i)
-		run_hash(iter, std::begin(lengths), std::end(lengths));
+		skip = run_hash(iter, std::begin(lengths), std::end(lengths), skip);
 
 	auto reducer = std::begin(seq);
 	auto end = std::end(seq);
@@ -101,4 +116,10 @@ int main()
 			<< static_cast<int>(std::accumulate(reducer, reducer + 16, 0, std::bit_xor{}));
 		reducer += 16;
 	}
+}
+
+int main()
+{
+	part1();
+	part2();
 }
