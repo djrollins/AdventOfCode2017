@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cstdint>
+#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <numeric>
@@ -56,30 +57,48 @@ private:
 	}
 };
 
-static std::vector<int> generate_sequence(std::size_t const count)
+static std::vector<uint8_t> generate_sequence(std::size_t const count)
 {
-	std::vector<int> seq(count);
+	std::vector<uint8_t> seq(count);
 	std::iota(std::begin(seq), std::end(seq), 0);
 	return seq;
 }
 
+template<typename CyclicIter, typename LengthsIter>
+void run_hash(CyclicIter &cycle, LengthsIter begin, LengthsIter end)
+{
+	static auto skip = 0;
+	std::vector<uint8_t> tmp(256);
+
+	for (auto iter = begin; iter != end; ++iter) {
+		auto end = std::copy_n(cycle, *iter, std::begin(tmp));
+		std::reverse(std::begin(tmp), end);
+		cycle = std::next(std::copy(std::begin(tmp), end, cycle), skip++);
+	}
+}
+
 int main()
 {
-	std::size_t const count = 256;
-	auto seq = generate_sequence(count);
+	auto seq = generate_sequence(256);
 
-	std::vector<int> lengths{130,126,1,11,140,2,255,207,18,254,246,164,29,104,0,224};
+	std::string input{"130,126,1,11,140,2,255,207,18,254,246,164,29,104,0,224"};
+	const uint8_t extra_lengths[] = {17, 31, 73, 47, 23};
 
-	cyclic_iterator<decltype(lengths)::iterator> iter(std::begin(seq), std::end(seq));
+	std::vector<uint8_t> lengths;
+	std::copy(std::begin(input), std::end(input), std::back_inserter(lengths));
+	std::copy(std::begin(extra_lengths), std::end(extra_lengths), std::back_inserter(lengths));
 
-	auto skip = 0;
-	std::vector<int> tmp(count);
+	cyclic_iterator<decltype(seq)::iterator> iter(std::begin(seq), std::end(seq));
 
-	for (auto length : lengths) {
-		auto end = std::copy_n(iter, length, std::begin(tmp));
-		std::reverse(std::begin(tmp), end);
-		iter = std::next(std::copy(std::begin(tmp), end, iter), skip++);
+	for (int i = 0; i < 64; ++i)
+		run_hash(iter, std::begin(lengths), std::end(lengths));
+
+	auto reducer = std::begin(seq);
+	auto end = std::end(seq);
+
+	while (reducer != end) {
+		std::cout << std::hex << std::setfill('0') << std::setw(2)
+			<< static_cast<int>(std::accumulate(reducer, reducer + 16, 0, std::bit_xor{}));
+		reducer += 16;
 	}
-
-	std::cout << seq[0] * seq[1] << '\n';
 }
