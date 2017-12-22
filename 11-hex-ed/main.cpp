@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <numeric>
 #include <cmath>
 #include <iostream>
@@ -50,13 +51,17 @@ int main(int argc, char **argv)
 	std::sregex_iterator begin{input.begin(), input.end(), splitter};
 	std::sregex_iterator end{};
 
-	coord dest = std::accumulate(
+	std::vector<int> distances;
+
+	std::accumulate(
 			begin, end,
 			coord{},
-			[](auto acc, auto &dir) {
+			[&distances](auto acc, auto &dir) {
 				move(acc, dir.str());
+				distances.push_back(distance(coord{}, acc));
 				return acc;
 			});
 
-	std::cout << distance(coord{}, dest) << '\n';
+	std::cout << "distance: " << distances.back() << '\n';
+	std::cout << "furthest: " << *std::max_element(distances.begin(), distances.end()) << '\n';
 }
